@@ -1,0 +1,3 @@
+// Extracting some zips
+tar -xvzf *.tar.gz
+tar -xf *.tar.bz2

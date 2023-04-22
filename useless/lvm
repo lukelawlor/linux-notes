@@ -1,0 +1,9 @@
+If a disk with LVM partitions is busy but isn't mounted, try this:
+
+# dmsetup table
+
+then
+
+# dmsetup remove <name>
+
+yay

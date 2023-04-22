@@ -1,0 +1,19 @@
+limits.h
+- contains symbolic constants for data type sizes
+
+
+
+float.h
+- contains symbolic constants for data type sizes
+
+
+
+string.h (strings)
+- has the strlen() method that returns the length of a string, excluding the null character
+
+
+
+
+ctype.h (character set functions)
+- isdigit(c) - returns 0 or 1 depending on if the character is a digit
+- tolower(c) - returns the lower case value of c

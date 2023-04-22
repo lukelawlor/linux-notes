@@ -1,0 +1,12 @@
+//To unpack a deb file
+dpkg-deb -x file.deb unpack
+dpkg-deb --control file.deb
+
+//To edit it further
+mv DEBIAN unpack
+
+//Edit package dependences
+nano unpack/DEBIAN/control
+
+//Rebuild deb file
+dpkg -b unpack file-fixed.deb

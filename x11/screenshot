@@ -1,0 +1,5 @@
+//How to screenshot in X using xwd, which is present in almost all xorg installs
+xwd -root -out screenshow.xwd
+
+//4.22.23 note
+It's a lot easier to just use scrot

@@ -1,0 +1,7 @@
+After setting USE flags be sure to update the system so the changes take effect
+
+emerge --ask --changed-use --deep @world
+
+or
+
+emerge -aUd @world

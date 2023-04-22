@@ -1,0 +1,13 @@
+4.26.2022
+
+learnopengl.com - Hello Triangle
+
+Everything in OpenGL is 3D space but it must be transformed to 2D pixels to be rendered. This is done using the graphics pipeline, which has two main functions. The first is to transform 3D points into 2D points, and the second is to actually draw the 2D points onto the screen.
+
+Each job the graphics pipeline does is done by a number of small CPUs on the graphics card. Each of these CPUs has one job they do and they can run in parallel to increase total execution speed. These jobs are known as shaders. Developers can define their own shaders so they have better control of rendering. Shaders are written in GLSL, OpenGL Shading Language.
+
+GL_ARRAY_BUFFER is the vertex object
+
+Vectors are used in GLSL, they can have a size of 1 to 4. The w component of a vector represents perspective division.
+
+

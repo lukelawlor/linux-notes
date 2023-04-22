@@ -1,0 +1,7 @@
+$ wget https://github.com/ice-wm/icewm/releases/download/2.9.6/icewm-2.9.6.tar.lz
+$ tar -x --lzip -vpf icewm-2.9.6.tar.lz
+$ cd icewm-2.9.6
+$ ./configure --prefix=/usr
+$ make
+$ sudo make install
+

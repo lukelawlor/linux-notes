@@ -1,0 +1,5 @@
+I wanted to do a minimal install of XFCE4, but when I did it, it changed my boot screen and added lightdm, a display manager. Here's how I undid that stuff:
+
+	After installing the xfce4 deb package:
+		
+		apt-get --purge remove lightdm plymouth desktop-base

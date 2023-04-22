@@ -1,0 +1,164 @@
+8.22.2022
+
+THERE ARE THREE WAYS TO INITIALIZE VARIABLES:
+	Copy Initialization:
+		int width = 5;
+	
+	Direct Initialization:
+		int width( 5 );
+	
+	Brace Initialization (modern way of initializing):
+		int width {5};
+
+8.23.2022
+
+TERMINOLOGY
+	Definition is declaring that a variable exists.
+	Assignment is assigning a value to a variable.
+	Initialization is definition and assignment in the same line.
+	Uninitialized variables are variables that have not been assigned a value.
+
+	An expression is something that returns a value.
+	An expression statement is a statement that consists only of an expression.
+
+MISC
+	To use exit codes EXIT_SUCCESS and EXIT_FAILURE, include <cstdlib>
+
+8.24.2022
+
+MISC
+	Order you should include things:
+	 	paired header files (for file.c, file.h)
+		other headers from your project
+		3rd party library headers
+		standard library headers
+	
+	You should order your headings in each grouping alphabetically
+
+STDLIB
+	To disable buffering of std::cout, use this statement:
+		std::cout << std::unitbuf;
+
+IDE DEBUGGING
+	Setting a breakpoint will stop the execution of a program at that breakpoint each time it is reached during the program's execution.
+
+	Using run to cursor will only stop the execution once the cursor is reached. When you continue execution, it won't stop again at the cursor.
+
+	You can use "set next statement" to skip over parts of code. This is an alternative to commenting things out.
+
+	THE SET NEXT STATEMENT SHOULD NOT BE USED TO CHANGE THE POINT OF EXECUTION TO A DIFFERENT FUNCTION. THIS RESULTS IN UNDEFINED BEHAVIOR.
+
+8.25.2022
+
+DATA TYPES
+	Signed integer overflow will cause undefined behavior.
+
+	Unsigned integers are generally avoided for the following reasons:
+
+	Unsigned integer overflow, however, will just "wrap back around."
+
+	In a mathematical operation in C++, if a signed and unsigned integer are used, the signed integer will be converted to unsigned.
+
+	If you want to use specific sized signed or unsigned ints, #include <cstdint> and use these types:
+		std::int8_t	8 bits signed
+		std::uint8_t	8 bits unsigned
+		std::int16_t	16 bits signed
+		std::uint16_t	16 bits unsigned
+		...this goes on and on for 32 and 64 bits
+	
+	You can also use fast and least integers. The numbers in these represent the minimum number of bits you want.
+		std::int_fast#_t
+		std::int_least#_t
+		
+		# can be 8, 16, 32, or 64
+
+FLOATING POINT NUMBERS
+	By default, a literal with a decimal is interpreted as a double, but with the f suffix, it becomes a float.
+
+	Floats have a minimum precision of 6 (they can have 6 digits after the decimal) and std::cout will only print up to 6 digits from a float.
+
+	std::cout by default will print up to 6 digits of precision after the decimal. To change this, use the output manipulator std:setprecision:
+
+		std::cout << std::setprecision(16); // show 16 digits of precision
+
+BOOLEANS
+	Insert std::boolalpha into std::cout to print bools as true or false. Use std::noboolalpha to revert this.
+
+	Extract std::cin into std::boolalpha to accept user input "true" or "false" as bools.
+
+CHARS
+	A problem with using std::int8_t and std::uint8_t is that most compilers will turn them into signed or unsigned chars. This means they cannot be differentiated from char types, so some functions will interperet them as characters instead of numbers.
+
+	Cast std::int8_t to just int to be sure that it'll be interpreted as a number.
+
+STATIC_CAST
+	To cast data types, use "static_cast<new_type>(variable)"
+
+CONST AND CONSTEXPR
+	const variables can only be initialized, not declared.
+
+	There are two types of const variables, compile-time constants and runtime constants.
+
+	Compile-time constants are known at compile time and can be used similar to macros with optimization. To make sure you are definining a variable as this type of constant, use constexpr instead of const.
+
+	Runtime constants are not known at compile time, usually because they rely on a function or user input.
+
+8.26.2022
+
+LITERAL SUFFIXES
+	u	unsigned
+	l	long
+	ul	unsigned long
+	ll	long long
+	ull	unsigned long long
+	f	floating point
+	l	double
+	s	std::string instead of char array
+	sv	std::string_view
+
+	You may want to use capital L to denote longs or doubles.
+
+	You can use 'e' in a floating point literal to use scientific notation:
+
+		6.02e23 is equal to 6.02 * 10^23
+	
+MISC
+	It is deprecated to use void in function headers to specify no parameters.
+
+	Magic numbers are numbers with no obvious context, they should be replaced by symbolic constants
+
+NUMERICAL SYSTEMS
+	So you all know you can use 0x to denote hex, but since C++14 you can use 0b to denote binary, and use ' to separate digits like so:
+		
+		int bin { 0b1011'0010 }; // assign binary 1011 0010 to the variable
+	
+	To print decimal, octal, and hex, insert these to std::cout:
+		std::dec
+		std::oct
+		std::hex
+	
+	#include <bitset> will give you the std::bitset type.
+
+	To declare a variable of this type, format like so:
+
+		// store an 8-bit value
+		std::bitset<8> bin{ 0b1100'0101 };
+	
+	You can use a dec, oct, or hex literal as the initializer value. The value between the angle brackets must be a compile-time constant.
+
+	When variables of type std::bitset are inserted into std::cout, they will be printed in binary. If you want to print a binary value without actually using a normal variable, you can use a temporary unnamed variable like so:
+
+		std::cout << std::bitset<4>{ 0b1010 } << '\n';
+	
+	When you store a variable inside std::bitset that has more bits than the number you put in the angle brackets, the number that gets stored in the variable is the bits up to the number in the angle brackets starting from the right.
+
+STD::STRING
+	Include the <string> header to use std::string.
+
+	To make an empty string, initialize the string with nothing:
+
+		std::string name {};
+	
+	When you read a string in with std::cin, input will stop being read when whitespace is encountered, and then the remaining text after the whitespace will be fed into the next read call. Sometimes this isn't wanted, so you can use std::getline (from <string> header) to get an entire line of text up until the newline:
+
+		std::getline(std::cin >> std::ws, string_variable);

@@ -1,0 +1,9 @@
+Virt setup:
+	1. Install QEMU
+	2. Install virt-manager
+	3. ???
+		Some misc stuff I had to do that I didn't realize at first
+			not use --listen on libvirtd
+			add user to libvirt
+		w00t
+	4. profit

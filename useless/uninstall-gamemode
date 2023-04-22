@@ -1,0 +1,2 @@
+systemctl --user stop gamemoded.service
+ninja uninstall -C builddir

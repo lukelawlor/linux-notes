@@ -1,0 +1,2 @@
+//Fix for the "network default is not active" error in libvirt
+virsh net-start default

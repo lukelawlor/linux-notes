@@ -1,0 +1,2 @@
+//Package required: imagemagick
+convert input.jpg -rotate 90 out.jpg

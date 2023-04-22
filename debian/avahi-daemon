@@ -1,0 +1,5 @@
+//To permanently disable avahi-daemon
+
+systemctl mask avahi-daemon.service avahi-daemon.socket
+systemctl disable avahi-daemon.service avahi-daemon.socket
+systemctl stop avahi-daemon.service avahi-daemon.socket

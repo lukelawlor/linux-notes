@@ -1,0 +1,17 @@
+How I changed the Chicago95 Theme
+---
+
+First I used the program Chicago95Plus! Though it was pretty buggy, it seemed to change the window properties for gtk-3.0 and xfwm but nothing else.
+
+To get the program to work with gtk-2.0 I went into the gtk-2.0 folder and changed the properties of gtkrc to fit with the properties of gtk.css in gtk-3.0
+
+Next, I used ImageMagick to replace the gray and dark gray colors of all of the gtk-2.0 images with the following commands
+	
+	#light gray
+	mogrify -format png -fill "#replacement_color" -opaque "#c0c0c0" */*.png
+	#dark gray
+	mogrify -format png -fill "#replacement_color" -opaque "#808080" */*.png
+
+It might be safe to use these commands to replace black and white textures, though I haven't tried it out.
+
+To change the window decorations for xfwm, I went into the xfwm4 folder and changed themerc

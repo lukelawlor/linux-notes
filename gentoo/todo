@@ -1,0 +1,121 @@
+system setup to-do
+---
+
+Format:
+Issue
+	[Optional date & description]
+	Fix steps
+	...
+	Source: 
+
+
+
+X use software cursor
+	2.20.23
+	Causes problems with redshift. Makes the cursor not follow blue light filter.
+
+	To fix, run 
+	$ grep 'autoconfigured driver' /var/log/Xorg.0.log
+	$ grep 'Creating default Display subsection in Screen section' /var/log/Xorg.0.log
+
+	First command shows list of autoconfigured drivers
+	Second command show which driver was used to make the default display
+
+	Example second command output: 
+	[    10.134] (II) DRIVERNAME(0): Creating default Display subsection in Screen section
+
+	DRIVERNAME is the driver name. It may be a truncated form of one of the drivers from the first command.
+
+	Create a .conf file in /etc/X11/xorg.conf.d/ and write these contents
+
+	Section "Device"
+		Identifier "My Graphics Card"
+		Driver "DRIVERNAME"
+		Option "SWcursor" "on"
+	EndSection
+
+	Restart X and enjoy
+
+	Source: https://www.reddit.com/r/linuxquestions/comments/21h663/question_can_i_set_my_cursor_to_be_a_software/
+
+
+
+fix pcieport & nvme dmesg errors
+	Error that keeps popping up in dmesg:
+	[13698.959014] pcieport 0000:00:01.1: AER: Corrected error received: 0000:01:00.0
+	[13698.959024] nvme 0000:01:00.0: PCIe Bus Error: severity=Corrected, type=Physical Layer, (Receiver ID)
+	[13698.959027] nvme 0000:01:00.0:   device [15b7:5006] error status/mask=00000001/0000e000
+	[13698.959030] nvme 0000:01:00.0:    [ 0] RxErr                  (First)
+
+	add pci=noaer to GRUB_CMDLINE_LINUX_DEFAULT in /etc/default/grub
+	run this afterwards to update
+	# grub-mkconfig -o /boot/grub/grub.cfg
+
+OpenGL / GLX not set up yet
+fix X startup errors
+X vsync with soupdl
+	2.21.23
+	I just needed to install the proper drivers
+	I read the xorg and xorg hardware acceleration pages on the gentoo wiki and they explained I needed VIDEO_CARDS="amdgpu radeonsi" in my make.conf
+
+
+finish porting old usb files
+	2.20.23 11:39pm
+	Done
+	Remeber to not copy over too many files at once
+	Wait for the usb drive to cool down
+
+
+
+stop hardware bell beep
+	# modprobe pcspkr
+	# rmmod pcspkr
+	# vim /etc/modprobe.d/blacklist.conf
+	blacklist pcspkr
+
+run wpa_supplicant at boot
+	2.21.23
+	Followed instructions on gentoo wiki to integrate it into OpenRC:
+	https://wiki.gentoo.org/wiki/Wpa_supplicant
+
+	contents of /etc/conf.d/wpa_supplicant:
+	wpa_supplicant_args="-B -c /etc/wpa_supplicant/wpa_supplicant.conf -i wlp5s0"
+
+
+gdrive (or just drive) setup
+	used rclone
+	another problem: stop files from being overwritten
+
+get back src/list
+
+
+font configuration
+
+recording with ffmpeg
+
+pulseaudio random audio clicking
+pulseaudio latency in soupdl
+
+steam
+oauth2 py in mutt
+wine
+qemu & kvm
+learn 2 backup system
+fvwm doesn't swallow xeyes
+
+-dont use ntpd for clock
+*change usb boot order and add bios password
+*minecraft
+
+make grub fit normal resolution
+make boot show tuxes
+
+write a gentoo guide
+
+changes to make at some point
+---
+*mutt -> neomutt
+*vim -> neovim?
+xterm -> st
+pulseaudio -> pipewire?
+Xorg -> Wayland?

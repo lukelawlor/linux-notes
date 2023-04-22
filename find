@@ -1,0 +1,2 @@
+// Find by filename
+find / -name filename.type 

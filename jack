@@ -1,0 +1,7 @@
+How to set up JACK and midi stuff
+
+Install jackd2
+Install pulseaudio-module-jack so you can use pulseaudio with jack
+Configure jack group stuff
+Start jack with qjackctl, enable dbus in that for the pulseaudio compatibility module to work
+Use qsynth and rosegarden for stuff, set the rosegarden midi device to use qsynth

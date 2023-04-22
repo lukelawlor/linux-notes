@@ -1,0 +1,24 @@
+//How to print things circa ~April 15 2022
+
+//Install CUPS for modern printers (requires no drivers)
+	# apt install cups
+
+
+//Show available printers
+$ lpstat -p -d
+
+-p specifies you want to see a list of available printers
+-d shows the default printer, if it is set
+output will be printer <PRINTER_NAME>
+
+
+//Set the default printer
+$ lpoptions -d <PRINTER_NAME>
+
+
+//Print a pdf
+$ lp -d <PRINTER_NAME> file.pdf
+
+
+//Print on both sides of paper (note added 1.5.23)
+lp -o sides=two-sided-long-edge file.pdf

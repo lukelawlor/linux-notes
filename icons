@@ -1,0 +1,7 @@
+To change program icons on linux, you must find the icon files and overwrite them, or replace them with a symlink to another icon if you're setting an icon to an already existing icon
+
+Here's where icons can be found
+	/usr/share/pixmaps
+	/usr/share/icons
+	$HOME/.icons
+	$HOME/.local/share/icons

@@ -1,0 +1,14 @@
+//How to give things regular permissions
+
+// Change the owner to the desired user
+chown user:user *
+
+// Change permissions of everything in the folder
+chmod -R 664 folder
+
+// Change permissions of every folder, not file
+find folder -type d -print0 | xargs -0 chmod 755
+
+
+
+

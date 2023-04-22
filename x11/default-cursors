@@ -1,0 +1,10 @@
+How 2 get default X11 cursors
+
+If you're using lxappearance, modify ~/.icons/default/index.theme
+
+Also edit ~/.config/gtk-3.0/settings.ini
+
+Firefox uses this last file, but you must give an actual proper cursor theme
+name for it.
+
+https://wiki.archlinux.org/title/Cursor_themes

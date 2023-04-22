@@ -1,0 +1,17 @@
+// How to set up QEMU + KVM !!!!!!!!
+
+
+// To check if you can use kvm:
+
+# apt install cpu-checker
+$ kvm-ok
+
+
+
+
+// To install libvirt and other goos stuff
+//
+# apt install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virtinst virt-manager
+# systemctl is-active libvirtd
+# usermod -aG libvirt username
+# usermod -aG kvm username

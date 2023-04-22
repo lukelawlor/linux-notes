@@ -1,0 +1,15 @@
+Most of this I found out from this link:
+
+https://www.vanormondt.net/~peter/blog/2021-03-16-mutt-office365-mfa.html
+
+archived version:
+https://web.archive.org/web/20220520193007/https://www.vanormondt.net/~peter/blog/2021-03-16-mutt-office365-mfa.html
+
+My messages and headers weren't being cached properly when I first started using this.
+
+The fix was to create the account folder AND the cache folder inside of it beforehand. Then you have to make sure there are no slashes as the end of the headers and bodies settings in the account config.
+
+3.4.23
+remember to add this to your .profile or .bashrc for when you're asked for
+your gpg password:
+export GPG_TTY=$(tty)

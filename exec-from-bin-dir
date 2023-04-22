@@ -1,0 +1,7 @@
+//To execute binaries from the bin directory at $HOME, insert this at the end of your .bashrc
+
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+//Found this out from tedfelix.com

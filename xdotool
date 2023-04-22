@@ -1,0 +1,5 @@
+//To simulate key presses in x, install xdotool
+apt install xdotool
+
+//Use Shown Below to type A
+xdotool key A

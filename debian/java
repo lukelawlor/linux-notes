@@ -1,0 +1,12 @@
+//How to install Java on Debian 11
+apt-get install openjdk-17-jdk
+apt-get install openjdk-17-jre
+
+
+
+
+
+
+
+
+

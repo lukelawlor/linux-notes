@@ -1,0 +1,48 @@
+Run these commands as root (type "su -" to become root)
+
+// Connecting
+
+// Stop NetworkManger if needed
+systemctl stop NetworkManager
+
+ip link set dev wlp3s0 up
+	(if operation not possible due to rfkill)
+	rfkill unblock wifi
+iwlist wlp3s0 scan | grep ESSID
+wpa_passphrase Fios-N6DE1 pass | tee -a /etc/wpa_supplicant/wpa_supplicant.conf
+wpa_supplicant -B -c /etc/wpa_supplicant/wpa_supplicant.conf -i wlp3s0
+dhclient wlp3s0
+
+// To disconnect ip (i think)
+dhclient wlp3s0 -r
+
+
+
+
+// Using nmcli
+nmcli dev wifi list
+sudo nmcli dev wifi connect network-ssid
+sudo nmcli dev wifi connect network-ssid password "network-password"
+
+// enter password invisibly
+sudo nmcli --ask dev wifi connect network-ssid
+
+
+
+# Connect to a WPA2 Enterprise network with wpa_supplicant with this .conf file.
+# I used this to connect to my university's wireless network on Arch linux.
+# Here's the command I used:
+#
+#   wpa_supplicant -i wlan0 -c ./wpa_supplicant.conf
+# 
+
+network={
+  ssid="YOUR_SSID"
+  scan_ssid=1
+  key_mgmt=WPA-EAP
+  identity="YOUR_USERNAME"
+  password="YOUR_PASSWORD"
+  eap=PEAP
+  phase1="peaplabel=0"
+  phase2="auth=MSCHAPV2"
+}

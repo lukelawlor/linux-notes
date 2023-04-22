@@ -1,0 +1,15 @@
+// How to use BDF fonts with X11
+// 1.17.23 history class
+// from https://hea-www.harvard.edu/~fine/Tech/font-howto.html
+
+cd $HOME
+mkdir fonts
+chmod 755 fonts
+cd fonts
+
+(move fonts into dir)
+mkfontdir
+chmod 644 *
+
+xset fp+ $HOME/fonts
+xset fp rehash

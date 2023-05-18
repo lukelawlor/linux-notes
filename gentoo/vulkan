@@ -1,0 +1,23 @@
+5.13.23
+
+Setting up Vulkan on Gentoo
+
+First I followed the steps from here:
+https://wiki.gentoo.org/wiki/Vulkan
+
+My VIDEO_CARDS is set to "amdgpu radeonsi" so to install Vulkan drivers I just had to re-emerge media-libs/mesa with the vulkan USE flag.
+
+I still had to deal with 2 more things before getting Vulkan to work.
+
+1: I had to make sure my user was in the group that owned the graphics card devices in /dev/dri. In this case, the cards were owned by the vglusers group.
+
+2: I had to use the amdgpu kernel module instead of the radeon module
+
+To do this, I followed steps from here:
+https://wiki.archlinux.org/title/AMDGPU#Enable_Southern_Islands_(SI)_and_Sea_Islands_(CIK)_support
+
+To get the amdgpu module to load before the radeon module, I created the file /etc/modprobe.d/amdgpu.conf with these contents:
+
+	# load amdgpu driver before radeon driver
+	options radeon	si_support=0
+	options amdgpu	si_support=1

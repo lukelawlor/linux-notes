@@ -1,0 +1,3 @@
+// This will run xorg without opengl access
+// This makes it so that you switch virtual terminals without suspending the xorg session
+startx -- :0 vt1 -extension GLX

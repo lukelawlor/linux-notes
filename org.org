@@ -1,0 +1,9 @@
+* Org Mode is Good
+- or something
+  - yeah
+  - [ ] sickish
+  - [ ] ffrickly
+  - [ ] um
+* Settings
+org-startup-truncated :: variable that controls truncation
+toggle-truncate-lines :: command that toggles truncation

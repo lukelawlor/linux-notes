@@ -1,0 +1,11 @@
+#+DATE: June 16, 2023
+* iptables
+To allow TCP connections on port 25565 for Minecraft servers:
+#+BEGIN_SRC shell
+  iptables -A INPUT -p tcp --dport 25565 -j ACCEPT
+#+END_SRC
+
+To save iptables config on Gentoo
+#+BEGIN_SRC shell
+  rc-service iptables save
+#+END_SRC

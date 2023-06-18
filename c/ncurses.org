@@ -1,0 +1,113 @@
+#+title: Ncurses Notes
+#+date: June 17, 2023
+#+author: Luke Lawlor
+#+email: lklawlor1@gmail.com
+* Sources
+- https://jbwyatt.com/ncurses.html
+
+* Initialization & Exiting
+=initscr();= will initialize and it will return =NULL= on error. =endwin()= will exit.
+
+* Functions
+** Window Management
+- wrefresh(win) :: update a window with the changes made to it
+- wclear(win) :: clears
+- delwin(win) :: deletes
+- wmove(win, y, x) :: move the cursor to (y, x) in the window
+
+*** Configuration
+- scrollok(win, TRUE) :: calling this will make every line in the window scroll up when the cursor wraps around the screen
+
+** Input
+- int wgetch(win) :: reads a char of input from a window
+
+*** Configuration
+- cbreak() :: disable buffering of typed characters
+- noecho() :: suppress automatic echoing of typed characters
+- keypad(stdscr, TRUE) :: enabled capturing of special keystrokes like *Backspace, Delete* and the arrow keys
+- nodelay(stdscr, TRUE) :: makes =getch()= return keys immediately whether they are pressed or not, instead of waiting for a key press
+
+** Output
+- int waddch(win, ch) :: prints a char to the window at the current cursor position, then advances the cursor position
+- int waddstr(win, str) :: prints a null-terminated string at the cursor position, then moves the cursor accordingly
+- int wprintw(win, fmt, ...) :: do formatted output like =printf=
+
+*** Attributes
+- waddch(win, ch | attr) :: prints a char with an attribute
+- wattron(win, attr) :: sets attribute "attr" on
+- wattroff(win, attr) :: sets attribute "attr" off
+
+** Multi-purpose
+- int mvgetch(y, x) :: moves the cursor and calls =getch()=
+- int mvwgetch(win, y, x) :: moves the cursor and calls =wgetch(win)=
+- mvwaddch(win, y, x, ch) :: moves and then adds the char
+- wechochar(win, ch) :: adds a char and refreshes
+
+** Shorthands
+- refresh() :: wrefresh(stdscr)
+- move(y, x) :: wmove(stdscr, y, x)
+- getch() :: wgetch(stdscr)
+- addch(ch) :: waddch(stdscr, ch)
+- addstr(str) :: waddstr(stdscr, str)
+- printw(fmt, ...) :: wprintw(stdscr, fmt, ...)
+- echochar(ch) :: wechochar(stdscr, ch)
+- assume_default_colors(fg, bg) :: init_pair(0, fg, bg)
+
+* Types
+- chtype :: contains a char variable and video attributes such as colors
+- WINDOW :: window made of a 2d array of characters
+  - windows can't overlap
+
+* Global Variables
+- LINES :: number of lines in the entire screen
+- COLUMNS :: number of columns in the entire screen
+
+** Colors
+- COLOR_BLACK
+- COLOR_RED
+- COLOR_GREEN
+- COLOR_YELLOW
+- COLOR_BLUE
+- COLOR_MAGENTA
+- COLOR_CYAN
+- COLOR_WHITE
+
+* Systems
+** Attributes
+- You can use attributes in two ways:
+  - Printing a single char with attributes:
+
+    #+begin_src c
+      waddch(win, 'a' | ATTRIBUTE_NAME);
+    #+end_src
+    
+  - Setting the attributes for a window, then printing chars like normal:
+
+    #+begin_src c
+      wattron(win, attr);
+    #+end_src
+
+*** Some predefined attributes
+| A_NORMAL      | Normal display (no highlight)                  |
+| A_STANDOUT    | Best highlighting mode of the terminal         |
+| A_UNDERLINE   | Underline                                      |
+| A_REVERSE     | Reverse video                                  |
+| A_BLINK       | Blinking                                       |
+| A_DIM         | Half bright                                    |
+| A_BOLD        | Extra bright or bold                           |
+| A_PROTECT     | Protection mode (some outdated thingy I think) |
+| A_INVIS       | Invisible or blank mode                        |
+| A_ALTCHARSET  | Alternate character set                        |
+| A_CHARTEXT    | Bit-mask to extract a character                |
+
+** Color Pairs
+- start_color() :: creates color pairs, stored in the global variables =COLORS= and =COLOR_PATHS=
+- COLOR_PAIR(n) :: use color pair number n, where n is in the range [0, =COLORS=)
+- init_pair(pair_number, fg, bg) :: defines color pair with foreground and background colors
+- int pair_content(pair_number, *fg, *bg) :: sets *fg and *bg to the foreground and background color codes of the color pair
+- int color_content(color_code, *r, *g, *b) :: shows the rgb of a color
+- use_default_colors() :: enables transparency, sets terminal fg & bg colors to -1, and prevents color pair 0 from being changed
+- int assume_default_colors(int fg, int bg) :: equi
+
+* Conventions
+- Functions that return an integer return =ERR= on failure and =OK= on success

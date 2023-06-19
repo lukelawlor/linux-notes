@@ -11,7 +11,9 @@
 * Functions
 ** Window Management
 - wrefresh(win) :: update a window with the changes made to it
-- wclear(win) :: clears
+- wclear(win) :: clears the entire window
+- wclrtobot(win) :: clears from the cursor to the bottom of the window
+- wclrtoeol :: clears from the cursor to the end of the line
 - delwin(win) :: deletes
 - wmove(win, y, x) :: move the cursor to (y, x) in the window
 
@@ -20,6 +22,10 @@
 
 ** Input
 - int wgetch(win) :: reads a char of input from a window
+- void timeout(int delay) :: sets the blocking behavior of wgetch()/getch()
+  if delay < 0, getch() will return once input is read
+  if delay = 0, getch() will return immediately
+  if delay > 0, getch() will wait a maximum of =delay= milliseconds to get input
 
 *** Configuration
 - cbreak() :: disable buffering of typed characters
@@ -45,6 +51,9 @@
 
 ** Shorthands
 - refresh() :: wrefresh(stdscr)
+- clear() :: wclear(stdscr)
+- clrtobot() :: wclrtobot(stdscr)
+- clrtoeol() :: wclrtoeol(stdscr)
 - move(y, x) :: wmove(stdscr, y, x)
 - getch() :: wgetch(stdscr)
 - addch(ch) :: waddch(stdscr, ch)
@@ -101,7 +110,7 @@
 | A_CHARTEXT    | Bit-mask to extract a character                |
 
 ** Color Pairs
-- start_color() :: creates color pairs, stored in the global variables =COLORS= and =COLOR_PATHS=
+- int start_color() :: creates color pairs, stored in the global variables =COLORS= and =COLOR_PATHS=
 - COLOR_PAIR(n) :: use color pair number n, where n is in the range [0, =COLORS=)
 - init_pair(pair_number, fg, bg) :: defines color pair with foreground and background colors
 - int pair_content(pair_number, *fg, *bg) :: sets *fg and *bg to the foreground and background color codes of the color pair

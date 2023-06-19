@@ -1,0 +1,30 @@
+#+title: C++ Notes
+#+date: August 22, 2022 - June 18, 2023
+#+author: Luke Lawlor
+#+email: lklawlor1@gmail.com
+* Variables
+** Initialization
+There are three ways to initialize variables:
+#+begin_src c++
+  // Copy initialization
+  int width = 5;
+
+  // Direct initialization
+  int width( 5 );
+
+  // Brace initialization (modern)
+  int width {5};
+#+end_src
+* STL
+** cout
+#+begin_src c++
+  // Disable the buffering of std::cout
+  std::cout << std::unitbuf;
+#+end_src
+* Terminology
+- Definition :: To declare that a variable exists
+- Assignment :: Assigning a value to a variable
+- Initialization :: Definition and assignment in the same statement
+- Uninitialized variable :: A variable that hasn't been assigned a value
+- Expression :: Something that returns a value
+- Expression statement :: A statement that only consists of an expression

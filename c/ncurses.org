@@ -1,5 +1,5 @@
 #+title: Ncurses Notes
-#+date: June 17, 2023
+#+date: June 17, 2023 - July 16, 2023
 #+author: Luke Lawlor
 #+email: lklawlor1@gmail.com
 * Sources
@@ -111,12 +111,11 @@
 
 ** Color Pairs
 - int start_color() :: creates color pairs, stored in the global variables =COLORS= and =COLOR_PATHS=
-- COLOR_PAIR(n) :: use color pair number n, where n is in the range [0, =COLORS=)
+- COLOR_PAIR(n) :: when passed to =wattron()=, use color pair number n, where n is in the range [0, =COLORS=)
 - init_pair(pair_number, fg, bg) :: defines color pair with foreground and background colors
 - int pair_content(pair_number, *fg, *bg) :: sets *fg and *bg to the foreground and background color codes of the color pair
 - int color_content(color_code, *r, *g, *b) :: shows the rgb of a color
 - use_default_colors() :: enables transparency, sets terminal fg & bg colors to -1, and prevents color pair 0 from being changed
-- int assume_default_colors(int fg, int bg) :: equi
 
 * Conventions
 - Functions that return an integer return =ERR= on failure and =OK= on success

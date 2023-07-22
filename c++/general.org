@@ -1,7 +1,15 @@
 #+title: C++ Notes
-#+date: August 22, 2022 - June 18, 2023
+#+date: August 22, 2022 - July 22, 2023
 #+author: Luke Lawlor
 #+email: lklawlor1@gmail.com
+* Terminology
+- Definition :: To declare that a variable exists
+- Assignment :: Assigning a value to a variable
+- Initialization :: Definition and assignment in the same statement
+- Uninitialized variable :: A variable that hasn't been assigned a value
+- Expression :: Something that returns a value
+- Expression statement :: A statement that only consists of an expression
+
 * Variables
 ** Initialization
 There are three ways to initialize variables:
@@ -15,16 +23,131 @@ There are three ways to initialize variables:
   // Brace initialization (modern)
   int width {5};
 #+end_src
+
+** Data types
+*** Primitives
+**** Integers
+***** Signedness
+- Signed integer overflow causes undefined behavior
+- Unsigned integer overflow causes wrapping
+- If a signed and unsigned integer are used in an expression, the signed integer will be converted to an unsigned integer
+
+***** Fast and least
+The =std::int_fast#_t= and =std::uint_fast#_t= types represent the fastest to process signed and unsigned integers with at least # bits.
+
+The =std::int_least#_t= and =std::uint_least#_t= types represent the smallest signed and unsigned integers with at least # bits.
+
+For each of these types, # can be 8, 16, 32, or 64.
+
+***** char misinterpretation
+Most compilers convert =std::int8_t= and =std::uint8_t= to =char=. This can cause some functions to interpret 8 bit integers as characters instead of numbers.
+
+To ensure that an 8 bit integer will be interpreted as a number, you can cast it to =int=.
+
+**** Floats
+***** Precision
+Floats have a minimum precision of 6 (they can hold 6 digits after the decimal).
+
+*** Constants
+**** const
+=const= variables can only be initialized. They are not mutable, nor are they always compile-time constants.
+
+**** constexpr
+=constexpr= can be used to define compile-time constants.
+
+*** Literals
+**** Integers
+- ='= can be used to separate digits
+- Since C++14, integers can be prefixed with =0b= to denote binary
+
+**** Floats
+Any number literal with a decimal is a double. With the f suffix, it becomes a float.
+
+You can use =e= in a floating point literal for scientific notation.
+=6.02e23= is equal to \[ 6.02 \times 10^{23} \]
+
+**** Suffixes
+| u   | unsigned                          |
+| l   | long                              |
+| ul  | unsigned long                     |
+| ll  | long long                         |
+| ull | unsigned long long                |
+| f   | floating point                    |
+| l   | double                            |
+| s   | std::string instead of char array |
+| sv  | std::string_view                  |
+
+The =s= and =sv= suffixes are in the =std::string_literals= namespace from the =<string>= header.
+
+Suffixes can be in lowercase or uppercase. You may want to use capital L for longs & doubles.
+
+** Casting
+=static_cast<type>(data)= converts data using implicit conversions and explicit user-defined conversions.
+
 * STL
-** cout
+The subheadings of this heading are names of header files from the C++ STL.
+
+** bitset
+#+begin_src c++
+  // Store a value of x bits
+  // The initializer must be a compile-time constant
+  std::bitset<x> value {initializer};
+
+#+end_src
+
+When you store a variable in =std::bitset<x>= that has more than x bits, the number stored in the variable is the bits up to x starting from the right.
+
+** iostream
+*** cout
+**** Settings
 #+begin_src c++
   // Disable the buffering of std::cout
   std::cout << std::unitbuf;
+
+  // Set the max number of digits to print after a decimal for floats to x
+  std::cout << std::setprecision(x);
+
+  // Print bools as true or false
+  std::cout << std::boolalpha;
+
+  // Revert the above statement
+  std::cout << std::noboolalpha;
+
+  // Print decimal, octal, or hexadecimal values
+  std::cout << std::dec;
+  std::cout << std::oct;
+  std::cout << std::hex;
+
 #+end_src
-* Terminology
-- Definition :: To declare that a variable exists
-- Assignment :: Assigning a value to a variable
-- Initialization :: Definition and assignment in the same statement
-- Uninitialized variable :: A variable that hasn't been assigned a value
-- Expression :: Something that returns a value
-- Expression statement :: A statement that only consists of an expression
+
+**** Data types
+=std::bitset= values are printed in binary.
+
+*** cin
+#+begin_src c++
+  // Accept "true" or "false" as bools
+  std::cin >> std::boolalpha;
+
+#+end_src
+
+** string
+#+begin_src c++
+  // Read a line of input into a string
+  std::getline(std::cin >> std::ws, str);
+  
+#+end_src
+
+* Differences from C
+- For function headers, an empty argument list, instead of =void=, is used to specify no arguments
+
+* Misc
+** Header inclusion order
+1. paired header files (for =file.c=, =file.h=)
+2. other headers from your project
+3. 3rd party library headers
+4. standard library headers
+
+You should order your headings in each group alphabetically
+
+** Sources
+- learncpp.com

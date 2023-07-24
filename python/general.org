@@ -1,0 +1,292 @@
+#+title: Python Notes
+#+date: July 23, 2023
+#+author: Luke Lawlor
+#+email: lklawlor1@gmail.com
+* Sources
+** Where these notes are derived from
+- [[https://wiki.python.org/moin/MovingToPythonFromOtherLanguages]]
+- [[https://python.swaroopch.com/]]
+  
+** Helpful resources
+- [[https://pypi.org/]] :: python package index
+- [[https://peps.python.org/pep-0008/]] :: style guide
+- [[https://wiki.python.org/moin/BeginnersGuide/Programmers]] :: tutorials
+
+* Variables
+** Strings
+- Strings are immutable
+- When you edit a string, you are generally creating a new string
+  
+*** Literals
+#+begin_src python
+  # the following are string literals
+  str1 = 'string 1'
+  str2 = "string 2"
+  str3 = '''line 1
+  line 2
+  line 3
+  line 4
+  '''
+  return str1 + str2 + str3
+#+end_src
+
+#+RESULTS:
+: string 1string 2line 1
+: line 2
+: line 3
+: line 4
+
+*** Formatting
+#+begin_src python
+  # Formatting methods
+  namber = 7
+  str1 = 'using .format: number is {}'.format(namber)
+  str2 = f'using f string: number is {namber}'
+  str3 = '{guy} is {desc}'.format(guy='josh', desc='unintelligent')
+
+  # Raw strings (prefixed with r) don't use escape sequences
+  str4 = r'no escape sequences work here \n'
+
+  return '{}\n{}\n{}\n\n{}'.format(str1, str2, str3, str4)
+#+end_src
+
+#+RESULTS:
+: using .format: number is 7
+: using f string: number is 7
+: josh is unintelligent
+: 
+: no escape sequences work here \n
+*** Functions
+#+begin_src python :results output
+  string = 'hello'
+
+  # Get the length of a string
+  print(len(string))
+#+end_src
+
+#+RESULTS:
+: 5
+
+** Bools
+The true and false identifiers are =True= and =False=.
+
+** Globals
+To use a global variable in a function, use the =global= keyword followed by the variable identifier.
+
+** Data structures
+*** List
+Lists are like C arrays, but you can add, remove, and search for items. They are also initialized with square brackets instead of curly braces.
+
+Lists can be used as *sequences*.
+
+#+begin_src python
+  mylist = ['python', 'has', 'lists', 'woah']
+  mylist[0] = 'snake'
+  del mylist[1]
+  mylist.append('a string')
+  return mylist
+#+end_src
+
+#+RESULTS:
+| snake | lists | woah | a string |
+
+*** Tuple
+A tuple is like a list but immutable and with no methods. Tuples are initialized with parentheses.
+
+An empty tuple is initialized with =()=, and a tuple with 1 item is initialized with =(item_name, )=. Note that the single comma after the item is needed.
+
+*** Dictionary
+A dictionary, or dict, contains key-value pairs.
+
+Keys must be immutable objects.
+
+#+begin_src python :results output
+  mydict = {
+      'key1' : 'value1',
+      'key2' : 'value2',
+      }
+  mydict['key2'] = 'newvalue'
+  if 'key3' in mydict:
+      print('key3 exists')
+  else:
+      print('key3 exists NOT!')
+  print('length of mydict is', len(mydict))
+  for k, v in mydict.items():
+      print('key is', k)
+      print('value is', v)
+      print('')
+#+end_src
+
+#+RESULTS:
+: key3 exists NOT!
+: length of mydict is 2
+: key is key1
+: value is value1
+: 
+: key is key2
+: value is newvalue
+: 
+
+* Classes
+- method :: function in a class
+- field :: member variable in a class
+
+* Operators
+| **  | power             |
+| //  | divide and floor  |
+| not | bool not          |
+| and | bool and          |
+| or  | bool or           |
+| del | deletes an object |
+
+* Control Flow
+** for
+=for..in= iterates over a *sequence* of objects.
+
+#+begin_src python :results output
+  # will print from 1 to 4
+  print('loop 1')
+  for i in range(1, 5):
+      print(i)
+
+  # Range includes the numbers from the first arg up to the second arg, never including the second arg
+  # The third arg is the step count
+  print('loop 2')
+  for i in range(1, 20, 3):
+      print(i)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+loop 1
+1
+2
+3
+4
+loop 2
+1
+4
+7
+10
+13
+16
+19
+#+end_example
+
+** break
+Using =break= will skip the execution of an =else= block that comes directly after =while= or =for=.
+* Functions
+** Writing functions
+#+begin_src python :results output
+  def func(a, b, c):
+	print('a is', a)
+	print('b is', b)
+	print('c is', c)
+
+  # Using keyword arguments
+  func(a=4, b=5, c=3)
+
+  # Variable argument functions
+  # params with 1 * = tuples
+  # params with 2 * = dicts
+  def total(a=5, *numbers, **phonebook):
+      print('a', a)
+
+      #iterate through all the items in tuple
+      for single_item in numbers:
+          print('single_item', single_item)
+
+      #iterate through all the items in dictionary    
+      for first_part, second_part in phonebook.items():
+          print(first_part,second_part)
+
+  total(10,1,2,3,Jack=1123,John=2231,Inge=1560)
+
+  # Docstrings
+  def fun():
+      '''a string on the first logical line of a function, like this one, is a docstring, which is used for documentation'''
+      return 2
+
+  # Retrieving a docstring
+  print(fun.__doc__)
+
+#+end_src
+
+#+RESULTS:
+#+begin_example
+a is 4
+b is 5
+c is 3
+a 10
+single_item 1
+single_item 2
+single_item 3
+Jack 1123
+John 2231
+Inge 1560
+a string on the first logical line of a function, like this one, is a docstring, which is used for documentation
+#+end_example
+** Built-in functions
+- dir(object) :: returns a list of attributes contained in object
+- dir() :: returns a list of attributes for the current module
+
+* IO
+** Input
+#+begin_src python
+  # Getting integer input
+  num = int(input('''What's your favorite number? '''))
+  print(num)
+  
+#+end_src
+
+#+RESULTS:
+
+** Output
+#+begin_src python :results output
+  # By default, python adds newlines after calls to print
+  print('line 1')
+  print('line 2')
+
+  # You can remove the newline like so:
+  print('part 1 ', end='')
+  print('part 2', end='')
+
+  print('')
+
+  # Easy ways to print the values of variables
+  print('number is', 0)
+
+#+end_src
+
+#+RESULTS:
+: line 1
+: line 2
+: part 1 part 2
+: number is 0
+
+* Modules
+Modules are essentially libraries. They can be written in Python or other languages like C.
+
+You can import modules with =import module_name=. Objects from the imported module will be accessible with their identifier prefixed with the module name. You can import objects from modules into the global namespace by using =from module_name import object_name=.
+
+=__name__= is a special variable that, if equal to ='__main__'=, tells us that the module is being run standalone.
+
+=__version__= is a special variable that indicates the version of a module.
+
+The subheadings of this heading are names of built-in modules.
+
+** sys
+- =sys.argv= is like C's =argv=
+- =sys.path= is equal to the =PYTHONPATH= environment variable
+
+* Misc
+** Syntax
+- =\= can be placed at the end of any line to continue the line on the next one. This is called *explicit line joining*.
+
+** Python compared to other languages
+- GUI is easier in Python than Perl
+
+** Advice
+- Try to use the standard library
+- For tricky iterations, use functions like map, filter, reduce, and zip
+- Watch out for confusing different references to the same object with different references to unique objects

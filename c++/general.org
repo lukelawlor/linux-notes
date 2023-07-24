@@ -2,6 +2,9 @@
 #+date: August 22, 2022 - July 22, 2023
 #+author: Luke Lawlor
 #+email: lklawlor1@gmail.com
+* Sources
+- [[learncpp.com]]
+  
 * Terminology
 - Definition :: To declare that a variable exists
 - Assignment :: Assigning a value to a variable
@@ -13,7 +16,7 @@
 * Variables
 ** Initialization
 There are three ways to initialize variables:
-#+begin_src c++
+#+begin_src C++
   // Copy initialization
   int width = 5;
 
@@ -88,7 +91,7 @@ Suffixes can be in lowercase or uppercase. You may want to use capital L for lon
 The subheadings of this heading are names of header files from the C++ STL.
 
 ** bitset
-#+begin_src c++
+#+begin_src C++
   // Store a value of x bits
   // The initializer must be a compile-time constant
   std::bitset<x> value {initializer};
@@ -100,7 +103,7 @@ When you store a variable in =std::bitset<x>= that has more than x bits, the num
 ** iostream
 *** cout
 **** Settings
-#+begin_src c++
+#+begin_src C++
   // Disable the buffering of std::cout
   std::cout << std::unitbuf;
 
@@ -124,14 +127,14 @@ When you store a variable in =std::bitset<x>= that has more than x bits, the num
 =std::bitset= values are printed in binary.
 
 *** cin
-#+begin_src c++
+#+begin_src C++
   // Accept "true" or "false" as bools
   std::cin >> std::boolalpha;
 
 #+end_src
 
 ** string
-#+begin_src c++
+#+begin_src C++
   // Read a line of input into a string
   std::getline(std::cin >> std::ws, str);
   
@@ -139,6 +142,7 @@ When you store a variable in =std::bitset<x>= that has more than x bits, the num
 
 * Differences from C
 - For function headers, an empty argument list, instead of =void=, is used to specify no arguments
+- For null pointer literals, =nullptr= is preferred to =NULL=
 
 * Misc
 ** Header inclusion order
@@ -149,5 +153,3 @@ When you store a variable in =std::bitset<x>= that has more than x bits, the num
 
 You should order your headings in each group alphabetically
 
-** Sources
-- learncpp.com

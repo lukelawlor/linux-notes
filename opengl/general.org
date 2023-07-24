@@ -1,0 +1,40 @@
+#+title: OpenGL Notes
+#+date: April 11, 2022 - July 23, 2023
+#+author: Luke Lawlor
+#+email: lklawlor1@gmail.com
+* Sources
+- [[learnopengl.com]]
+  
+* Terminology
+- Alpha :: opacity
+- Normalized device coordinates :: coordinates within a small space where the x, y, and z values vary from -1.0 to 1.0
+- Binding an object :: the act of telling OpenGL that future function calls are operating on said object
+  - Multiple objects can be bound at once, assuming that they are different types of objects
+- VBO :: Vertex buffer object
+  - Stores vertices in GPU memory
+  - Allows us to send many vertices at once so the GPU can render them effectively
+  - Memory transportation from CPU to GPU is slow, but rendering with memory on the GPU is fast
+
+* Misc
+** Rendering pipeline stages
+1. Vertex shader
+   - Transforms 3D coords into different 3D coords
+   - Processes vertex attributes
+2. Primitive assembly
+   - Input: vertices
+   - Makes a primitive shape using the vertices
+3. Geometry shader
+   - Generates more shapes out of the given shape
+4. Rasterization
+   - Maps primitives to pixels on the screen
+   - Performs clipping, which discards all the fragments outside of view
+   - Output: fragments, which are objects that require all of the data required for OpenGL to render a single pixel
+5. Fragment shader
+   - Calculates the color of pixels
+6. Alpha test and blending
+   - Checks depth and stencil values of the fragment
+   - Uses those to tell if the fragment is in front of or behind other objects and should be discarded accordingly
+   - Checks for alpha values to calculate final colors
+     
+** the
+The directory =the= in this repo contains highly commented OpenGL test code. Why did I name my series of OpenGL test programs =the=?... I have no idea.

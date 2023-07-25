@@ -1,5 +1,5 @@
 #+title: Python Notes
-#+date: July 23, 2023
+#+date: July 23, 2023 - July 24, 2023
 #+author: Luke Lawlor
 #+email: lklawlor1@gmail.com
 * Sources
@@ -56,22 +56,63 @@
 : josh is unintelligent
 : 
 : no escape sequences work here \n
-*** Functions
+*** Methods
 #+begin_src python :results output
   string = 'hello'
 
   # Get the length of a string
   print(len(string))
+
+  if string.startswith('he'):
+      print('string starts with he')
+
+  if 'h' in string:
+      print('sring contains h')
+
+  if string.find('bruh') != -1:
+      print('string contains bruh. Be careful.')
+
+  seperator = '*'
+  mylist = ['one', 'two', 'three']
+  print(seperator.join(mylist))
 #+end_src
 
 #+RESULTS:
 : 5
+: string starts with he
+: sring contains h
+: one*two*three
 
 ** Bools
 The true and false identifiers are =True= and =False=.
 
 ** Globals
 To use a global variable in a function, use the =global= keyword followed by the variable identifier.
+
+** References
+References are bound to objects. Assigning references to each other results in binding, not object copying.
+
+To create a new copy of a list, use the slicing operation.
+
+#+begin_src python :results output
+  shoplist = ['food', 'colonel sanders', 'garfield']
+
+  # Binding references
+  sicklist = shoplist
+
+  del sicklist[0]
+  print(shoplist)
+
+  # Creating a copy of the object
+  sicklist = shoplist[:]
+
+  del sicklist[0]
+  print(shoplist)
+#+end_src
+
+#+RESULTS:
+: ['colonel sanders', 'garfield']
+: ['colonel sanders', 'garfield']
 
 ** Data structures
 *** List
@@ -127,17 +168,84 @@ Keys must be immutable objects.
 : value is newvalue
 : 
 
-* Classes
-- method :: function in a class
-- field :: member variable in a class
+*** Sequence
+A *sequence* is an array object with the following features:
++ membership tests (=in= and =not in= expressions)
++ indexing/subscription operations
++ slicing operations
+
+Negative indexes wrap around.
+
+Slicing operations are in the format =1:2:3=, where =1=, =2=, and =3= are arguments
+- There must be at least one =:=
+- =1= is the starting index to include in the selection. The item at this index is included.
+- =2= is the ending index to include in the selection. The item at this index is not included.
+- =3= is the step for slicing
+- Any argument can be left blank
+  - blank =1= is the same as =1= being 0
+  - blank =2= is the same as =2= being the length of the sequence
+  - blank =3= is the same as =3= being 1
+
+#+begin_src python :results output
+  shoplist = ['apple', 'mango', 'carrot', 'banana']
+  name = 'swaroop'
+  
+  # Indexing or 'Subscription' operation #
+  print('Item 0 is', shoplist[0])
+  print('Item 1 is', shoplist[1])
+  print('Item 2 is', shoplist[2])
+  print('Item 3 is', shoplist[3])
+  print('Item -1 is', shoplist[-1])
+  print('Item -2 is', shoplist[-2])
+  print('Character 0 is', name[0])
+  
+  # Slicing on a list #
+  print('Item 1 to 3 is', shoplist[1:3])
+  print('Item 2 to end is', shoplist[2:])
+  print('Item 1 to -1 is', shoplist[1:-1])
+  print('Item start to end is', shoplist[:])
+  
+  # Slicing on a string #
+  print('characters 1 to 3 is', name[1:3])
+  print('characters 2 to end is', name[2:])
+  print('characters 1 to -1 is', name[1:-1])
+  print('characters start to end is', name[:])
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Item 0 is apple
+Item 1 is mango
+Item 2 is carrot
+Item 3 is banana
+Item -1 is banana
+Item -2 is carrot
+Character 0 is s
+Item 1 to 3 is ['mango', 'carrot']
+Item 2 to end is ['carrot', 'banana']
+Item 1 to -1 is ['mango', 'carrot']
+Item start to end is ['apple', 'mango', 'carrot', 'banana']
+characters 1 to 3 is wa
+characters 2 to end is aroop
+characters 1 to -1 is waroo
+characters start to end is swaroop
+#+end_example
+
+*** Set
+Sets are *unordered* collections of objects.
+
+With sets, you can...
+- test for membership
+- check for subsets of another set
+- find the intersection between two sets
 
 * Operators
-| **  | power             |
-| //  | divide and floor  |
-| not | bool not          |
-| and | bool and          |
-| or  | bool or           |
-| del | deletes an object |
+| **  | power                                |
+| //  | divide and floor (like int division) |
+| not | bool not                             |
+| and | bool and                             |
+| or  | bool or                              |
+| del | deletes an object                    |
 
 * Control Flow
 ** for
@@ -175,6 +283,7 @@ loop 2
 
 ** break
 Using =break= will skip the execution of an =else= block that comes directly after =while= or =for=.
+
 * Functions
 ** Writing functions
 #+begin_src python :results output
@@ -202,14 +311,6 @@ Using =break= will skip the execution of an =else= block that comes directly aft
 
   total(10,1,2,3,Jack=1123,John=2231,Inge=1560)
 
-  # Docstrings
-  def fun():
-      '''a string on the first logical line of a function, like this one, is a docstring, which is used for documentation'''
-      return 2
-
-  # Retrieving a docstring
-  print(fun.__doc__)
-
 #+end_src
 
 #+RESULTS:
@@ -229,20 +330,103 @@ a string on the first logical line of a function, like this one, is a docstring,
 ** Built-in functions
 - dir(object) :: returns a list of attributes contained in object
 - dir() :: returns a list of attributes for the current module
+- len() :: returns the length of a sequence
+- int(), str() :: convert an object to an int or string respectively
 
+* OOP
+** Terminology
+- method :: function in a class
+- field :: member variable in a class
+- attributes :: fields and methods of a class
+- instance :: object of a class
+- attribute reference :: a reference that can be used to access attributes (ex. =self=)
+- polymorphism :: using a subclass as its base class
+- multiple inheritance :: inheriting from multiple classes
+  
+** Types of fields
+- Class variables
+  - only one copy shared among all instances of the class
+  - initialized in the class body outside of =__init__=
+  - accessed through =ClassName.variable_name=
+  - similar to static class variables from C++ & Java
+- Object variables
+  - each instance owns its own copy of one
+  - initialized in =__init__=
+  - accessed through =self.variable_name=
+
+An object variable with the same name as a class variable will overshadow the class variable.
+
+Prefixing a field name with =__= causes Python to use name mangling to make the field private.
+
+** Methods
+The first parameter in the parameter list for a method is the name of the =self= variable. It is common practice to name this variable =self=. When a method is called, no argument is provided for =self=.
+
+=self= is equivalent to C++'s =this= pointer and Java's =this= reference.
+
+=myobject.method(arg1, arg2)= is equivalent to =MyClass.method(myobject, arg1, arg2)=.
+
+*** Class methods
+Inserting the =@classmethod= *decorator* on a line before a method definition makes the method a *class method*.
+
+To call a method as a class method, use =classmethod(method_name)=.
+
+The first argument of a class method contains the type of class that the method is called from. It is common practice to name this variable =cls=.
+
+#+begin_src python :results output
+class Human:
+    def __init__(self, name):
+        self.name = name
+
+    @classmethod
+    def talk(cls):
+        print(cls)
+
+class Fred(Human):
+    def __init__(self, name):
+        Human.__init__(self, name)
+
+h = Human('human')
+f = Fred('josh')
+h.talk()
+f.talk()
+#+end_src
+
+#+RESULTS:
+: <class '__main__.Human'>
+: <class '__main__.Fred'>
+
+** Inheritance
+To inherit a class, add the name of the base class(es) encased in a tuple in parentheses after the name of a class in its definition.
+
+To call a base class constructor from a subclass, use =SuperClassName.__init__(self, args)=. The constructor of the base class is implicitly called if no =__init__= method is defined for the subclass.
+
+When a method is called, Python first checks for it in the subclass. If it is not found, Python checks the base classes, starting with the first base class listed in the tuple of base classes that the subclass was defined with.
+
+** Misc
+- =self.__class__= accesses the class for an object
+  
 * IO
 ** Input
 #+begin_src python
-  # Getting integer input
+  # input() returns string input from the user
+  print('type something plz. ')
+  string = input()
+  print(f'got {string}.')
+
+  # The return value of input() can be cast to another type, such as int
   num = int(input('''What's your favorite number? '''))
   print(num)
-  
+
 #+end_src
 
 #+RESULTS:
 
 ** Output
 #+begin_src python :results output
+  # print() takes a variable amount of arguments of different types
+  # each argument is printed out and separated with a single space
+  print('arg1', 'arg2', 'arg3')
+  
   # By default, python adds newlines after calls to print
   print('line 1')
   print('line 2')
@@ -259,6 +443,7 @@ a string on the first logical line of a function, like this one, is a docstring,
 #+end_src
 
 #+RESULTS:
+: arg1 arg2 arg3
 : line 1
 : line 2
 : part 1 part 2
@@ -282,6 +467,11 @@ The subheadings of this heading are names of built-in modules.
 * Misc
 ** Syntax
 - =\= can be placed at the end of any line to continue the line on the next one. This is called *explicit line joining*.
+- =pass= indicates an empty block, similar to =;= in C or a "no op" instruction
+** Docstrings
+- Docstrings are strings placed on lines directly after a function or class definition
+- They are used for documentation
+- They can be accessed with =func_or_class_name.__doc__=
 
 ** Python compared to other languages
 - GUI is easier in Python than Perl

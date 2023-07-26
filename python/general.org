@@ -1,5 +1,5 @@
 #+title: Python Notes
-#+date: July 23, 2023 - July 24, 2023
+#+date: July 23, 2023 - July 25, 2023
 #+author: Luke Lawlor
 #+email: lklawlor1@gmail.com
 * Sources
@@ -8,6 +8,7 @@
 - [[https://python.swaroopch.com/]]
   
 ** Helpful resources
+- https://docs.python.org/3/library/ :: standard library documentation
 - [[https://pypi.org/]] :: python package index
 - [[https://peps.python.org/pep-0008/]] :: style guide
 - [[https://wiki.python.org/moin/BeginnersGuide/Programmers]] :: tutorials
@@ -82,6 +83,10 @@
 : string starts with he
 : sring contains h
 : one*two*three
+*** Unicode
+To use unicode, write =# encoding=utf-8= at the top of the program.
+
+A unicode string literal is prefixed with =u=.
 
 ** Bools
 The true and false identifiers are =True= and =False=.
@@ -407,15 +412,32 @@ When a method is called, Python first checks for it in the subclass. If it is no
   
 * IO
 ** Input
-#+begin_src python
-  # input() returns string input from the user
-  print('type something plz. ')
-  string = input()
-  print(f'got {string}.')
+- input() :: returns string input from the user
+- open(filename, mode) :: opens a file like C's =fopen= and returns a file object
+  - If mode contains...
+    - w, writing
+    - a, appending
+    - r, reading
+    - t, text
+    - b, binary
+  - By default, reading & text is assumed
+- io.open(filename, mode, encoding) :: same as =open()=, but encoding can be set using keyword arguments
+  - =encoding= is a text encoding, such as ='utf-8'=
+  - when setting =encoding=, make sure you are using text mode
+- file.write(str) :: writes a string to a file
+- file.readline() :: returns a line from the filex
+- file.read() :: returns the entire contents of the file
+- file.close() :: closes a file
 
-  # The return value of input() can be cast to another type, such as int
-  num = int(input('''What's your favorite number? '''))
-  print(num)
+#+begin_src python
+# input() returns string input from the user
+print('type something plz. ')
+string = input()
+print(f'got {string}.')
+
+# The return value of input() can be cast to another type, such as int
+num = int(input('''What's your favorite number? '''))
+print(num)
 
 #+end_src
 
@@ -449,6 +471,73 @@ When a method is called, Python first checks for it in the subclass. If it is no
 : part 1 part 2
 : number is 0
 
+* Exceptions
+** Terminology
+- raise :: throw an exception
+
+** Handling
+Exceptions can be handled with the =try..except= statement.
+
+To create an =except= block, write =except= followed by an exception or a parenthesized list of exceptions. If no exception is supplied, it will handle all exceptions.
+
+If one exception is supplied with an =except= block, you can write =as ex= to make the thrown exception available as a variable =ex=.
+
+The =else= block after a =try= block is executed if no exception occurs.
+
+The =finally= block will always be run whether an exception occurs or not.
+
+#+begin_src python :results output
+try:
+    text = input('guy@pc:~$ ')
+except EOFError:
+    print('how could you EOF on me like that? :(')
+except KeyboardInterrupt:
+    print('''ok. Fine then. just cancel me... NO I'm not mad,. that's cool... >:(''')
+else:
+    print('running {}...'.format(text))
+#+end_src
+
+#+RESULTS:
+: guy@pc:~$ how could you EOF on me like that? :(
+
+** Raising
+Thrown exceptions should be objects that must be derived from the =Exception= class.
+
+#+begin_src python :results output
+class MySickException(Exception):
+    '''A user-defined exception class.'''
+    def __init__(self, num):
+        Exception.__init__(self)
+        self.num = num
+
+    def __str__(self):
+        return 'mysickexception with num = {}'.format(self.num)
+
+try:
+    raise MySickException(7)
+except MySickException as ex:
+    print(ex)
+#+end_src
+
+#+RESULTS:
+: mysickexception with num = 7
+
+** with
+=with= statements can be used to abbreviate creating an object in a =try= block and destroying it in a =finally= block.
+
+Following the syntax of =with func() as o:=, the return value of =func()= should be an object with a =__enter__= and =__exit__= method. =__enter__= is called when the object is constructed, and =__exit__= is called after finishing the =with= block. The object will be made available within the =with= block as =o=.
+
+#+begin_src python :results output
+with open("poem.txt") as f:
+    for line in f:
+        print(line, end='')
+#+end_src
+
+#+RESULTS:
+: not a poem
+: umm
+: yeah
+
 * Modules
 Modules are essentially libraries. They can be written in Python or other languages like C.
 
@@ -460,9 +549,49 @@ You can import modules with =import module_name=. Objects from the imported modu
 
 The subheadings of this heading are names of built-in modules.
 
+** logging
+logging is for debug message logging.
+
+#+begin_src python :results output
+import os
+import platform
+import logging
+
+if platform.platform().startswith('Windows'):
+    logging_file = os.path.join(os.getenv('HOMEDRIVE'),
+                                os.getenv('HOMEPATH'),
+                                'test.log')
+else:
+    logging_file = os.path.join(os.getenv('HOME'),
+                                'test.log')
+
+print("Logging to", logging_file)
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s : %(levelname)s : %(message)s',
+    filename=logging_file,
+    filemode='w',
+)
+
+logging.debug("Start of the program")
+logging.info("Doing something")
+logging.warning("Dying now")
+#+end_src
+
+** pickle
+Pickle can be used to story Python objects in files
+
+- pickle.dump(object, file) :: dumps object to file opening for writing in binary, known as pickling
+- pickle.load(file) :: returns an object stored in a file, known as unpickling
+
 ** sys
+sys contains systemic-specific functionality.
+
 - =sys.argv= is like C's =argv=
 - =sys.path= is equal to the =PYTHONPATH= environment variable
+- =sys.version_info= tuple that provides Python version info
+- sys.stdout.flush() :: flushes standard output
 
 * Misc
 ** Syntax

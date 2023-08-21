@@ -1,0 +1,18 @@
+#+title: Notes on using virtual machines with QEMU, KVM, libvirtd, and virt-manager
+#+author: Luke Lawlor
+* Fixing errors
+To fix the "network default is not active" error in libvirt
+#+begin_src shell
+virsh net-start default
+#+end_src
+
+* Sharing files between the host and guest (where both run Linux)
+Learned from [[https://www.youtube.com/watch?v=a7Bx4T5GvOs]]
+I did this by using virtiofs. Steps:
+1. In the hardware menu add a new filesystem
+2. Set source path to the directory to share on the host
+3. Set target path to a name to be used on the guest
+4. Enable shared memory on the memory hardware
+5. On the gentoo host, I had to install =app-emulation/virtiofsd=
+6. In the guest, with root permissions, run =mount -t virtiofs target_path_name directory=
+7. Win

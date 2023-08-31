@@ -1,0 +1,7 @@
+#+title: GoatTracker 2 Notes
+#+author: Luke Lawlor
+#+date: August 25, 2023
+* Sources
+- [[https://csdb.dk/release/?id=81146][GoatTracker v2.67 Tutorial by Zerozillion]]
+  
+* Misc

@@ -117,3 +117,9 @@ Note: See the glossary in the emacs manual for more emacs terms
 | window                  | Place where a new buffer, scrollbar, and mode line are                                |
 | frame                   | a collection of windows, together with its menus, scroll bars, echo area, etc.        |
 | recursive editing level | You know you're in one when the mode is surrounded with square brackets               |
+
+* Org
+** Default bindings
+| C-c C-, s     | Insert code block    |
+| C-c .         | Insert timestamp     |
+| C-u C-u C-c . | Insert alt timestamp |

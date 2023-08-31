@@ -1,0 +1,127 @@
+#+title: wxWidgets Notes
+#+author: Luke Lawlor
+#+email: lklawlor1@gmail.com
+#+date: August 27, 2023 - August 30, 2023
+* Sources
+- [[https://wxwidgets.org/docs/book/Cross-Platform%20GUI%20Programming%20with%20wxWidgets.pdf][Cross-Platform GUI Programming with wxWidgets (PDF)]]
+- [[https://wiki.wxwidgets.org/Installing_and_configuring_under_Gentoo]]
+- [[https://www.youtube.com/watch?v=BjQhp0eHmJw&list=PLFk1_lkqT8MbVOcwEppCPfjGOGhLvcf9G&index=1][C++ GUI Programming for Beginners by OttoBotCode (YT)]]
+
+* Installation & Configuration
+** wx-config
+Use =wx-config= on Gentoo to get compiler flags for wxWidgets.
+
+#+begin_src shell
+# for cxxflags
+wx-config --cppflags
+
+# for ldflags
+wx-config --libs
+#+end_src
+
+* Memory Management
+Most classes should be created with =new= and not explicity be deleted. wxWidgets handles the destruction of these classes.
+
+* Functions & Macros
+- bool wxEntry(int &argc, wxChar **argv) :: Runs the wxApp object set with =wxApp::SetInstance(app)=
+- void wxEntryCleanup() :: Frees resources allocated by a succesful call to wxEntryStart()
+- IMPLEMENT_APP(MyApp) :: Creates the main function for the platform, which is used to start =MyApp=
+- DECLARE_APP(MyApp) :: Implements =MyApp &wxGetApp()=, which can be used to get a reference to the running app
+
+* Classes & Methods
+** Initialization
+*** wxApp
+- bool OnInit() :: Runs app initialization code. Returning =true= allows the event loop to run. Returning =false= quits the app.
+** Windowing
+*** wxWindow
+- virtual bool Show(bool show = true) :: Shows or hides the window
+- void SetClientSize(int width, int height) :: sets the window client area in pixels
+
+*** wxFrame (top level window)
+A frame is a top level window that contains other windows.
+
+inherits: wxWindow
+
+- void Centre(int dir = wxBOTH) :: centers the window
+  =dir= can be wxHORIZONTAL, wxVERTICAL, or wxBOTH
+
+** Controls
+inherits: wxEvtHandler
+
+*** wxPanel (control widget container)
+Panels are used to store control widgets, such as buttons.
+
+- wxPanel(wxWindow *parent, (default params)) :: ctor
+
+*** wxButton
+- wxButton(wxWindow *parent, wxWindowID id, const wxString &label=wxEmptyString, const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, (default params)) ::
+  =id= is an int used for event identification
+  =label= is the text on the button
+  =pos= is the position of the button relative to the top left corner of the window/panel it's in
+  =size= is the width & height of the button
+
+*** wxStaticText
+Displays text that the user can't edit
+
+- wxStaticText(wxWindow *parent, xWindowID id, const wxString &label, const wxPoint &pos = wxDefaultPosition, const wxSIze &size wxDefaultSize, long style = 0, const wxString &name = wxStaticTextNameStr) ::
+  =label= the text to display
+
+*** wxGauge (progress bar)
+- wxGauge(wxWindow *parent, wxWindowID id, int range, const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize, long style = wxGA_HORIZONTAL, const wxValidator &validator = wxDefaultValidator, const wxString &name = wxGaugeNameStr) ::
+  - =range= = maximum value for the gauge
+  - =style= can be one of the following:
+    - wxGA_HORIZONTAL :: gauge fills horizontally
+    - wxGA_VERTICAL :: gauge fills vertically
+    - wxGA_SMOOTH :: creates a smooth progress bar with one pixel wide update step (not widely supported)
+    - wxGA_TEXT :: displays the value in percents in the guage itself (only supported in wxQt)
+    - wxGA_PROGRESS :: Reflects the value of the gauge in the Windows 7+ taskbar and dock icon under macOS, ignored on most other platforms
+- void SetRange(int range) :: set range
+- int GetRange() const :: get range
+- void SetValue(int pos) :: set the value for the gauge (must be in the range [0, GetRange()])
+- int GetValue() const :: get value
+
+** Events
+*** wxCommandEvent
+This class is used to store event parameters for event-handling functions.
+
+*** wxEvtHandler
+- template <typename EventTag, typename Functor> void Bind(const EventTag &eventType, Functor functor, int id=wxID_ANY, int lastId=wxID_ANY, wxObject *userData=NULL) :: binds a function to an event
+  =eventType= ex: wxEVT_BUTTON
+  =functor= event handler function
+  =handler= the object that handles the event, which should be an instance of the class that =functor= belongs to
+  =id= the first ID of the identifier range to be associated with the event handler
+  =lastId= the last ID of the identifier range to be associated with the event handler
+  =userData= optional data to be associated with the event table entry. wxWidgets will own the pointer (aka it will free it when wxWidgets quits), and the pointer can be retrieved using =wxEvent::GetEventUserData()= later
+- template <typename EventTag, typename Functor> void Unbind(const EventTag &eventType, Functor functor, int id=wxID_ANY, int lastId=wxID_ANY, wxObject *userData=NULL) :: same as =Bind()= but undoes the binding
+
+* Events
+** Handling
+Events can be handled statically or dynamically. For both methods, you need a window ID to identify which widget the event is related to, and a callback function for when the event occurs. This function must take a parameter of type =wxCommandEvent&=.
+
+*** Window IDs
+Window IDs are integers used to identify widgets and bind events to them.
+
+Follow these rules when creating your own custom IDs:
+- Must be positive
+- Can't be 0 or 1
+- Can't be in the range [wxID_LOWEST (4999), wxID_HIGHEST (5999)]
+
+*** Dynamic handling
+Dynamic handling involves using =wxEvtHandler::Bind()= and =wxEvtHandler::Unbind()=. See the notes on those methods for more info.
+*** Static handling
+Static handling uses event tables created with macros. Events are set at compile time and cannot be removed.
+
+How to write the event table:
+
+1. In your wxFrame class declaration, write =wxDECLARE_EVENT_TABLE()=.
+2. In the class implementation file, write =wxBEGIN_EVENT_TABLE(class, baseClass)=, where =class= is your wxFrame-derived class, and =baseClass= is its base class.
+3. Tab up once and insert the contents of the table (see "Static event handler macros" for what to add here)
+   - ex. for handling button presses: =EVT_BUTTON(BUTTON_ID, handlerFunc)=
+4. End the event table with =wxEND_EVENT_TABLE()=
+
+**** Static event handler macros
+Event handlers can be found on the documentation pages for certain classes.
+
+- =EVT_BUTTON(BUTTON_ID, handlerFunc)= :: button presses
+** Event Propagation
+When an event happens (ex. 

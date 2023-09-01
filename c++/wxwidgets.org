@@ -4,6 +4,7 @@
 #+date: August 27, 2023 - August 30, 2023
 * Sources
 - [[https://wxwidgets.org/docs/book/Cross-Platform%20GUI%20Programming%20with%20wxWidgets.pdf][Cross-Platform GUI Programming with wxWidgets (PDF)]]
+- [[https://docs.wxwidgets.org/3.2/][wxWidgets 3.2 Documentation (Doxygen)]]
 - [[https://wiki.wxwidgets.org/Installing_and_configuring_under_Gentoo]]
 - [[https://www.youtube.com/watch?v=BjQhp0eHmJw&list=PLFk1_lkqT8MbVOcwEppCPfjGOGhLvcf9G&index=1][C++ GUI Programming for Beginners by OttoBotCode (YT)]]
 
@@ -22,6 +23,9 @@ wx-config --libs
 * Memory Management
 Most classes should be created with =new= and not explicity be deleted. wxWidgets handles the destruction of these classes.
 
+* Types
+- wxChar :: defined to be =char= when =wxUSE_UNICODE==0= and =wchar_t= when =wxUSE_UNICODE==1= (the default)
+
 * Functions & Macros
 - bool wxEntry(int &argc, wxChar **argv) :: Runs the wxApp object set with =wxApp::SetInstance(app)=
 - void wxEntryCleanup() :: Frees resources allocated by a succesful call to wxEntryStart()
@@ -30,20 +34,32 @@ Most classes should be created with =new= and not explicity be deleted. wxWidget
 
 * Classes & Methods
 ** Initialization
+*** wxAppConsole
+- static void SetInstance(wxAppConsole *app) :: makes =*app= the replacement for the global application object, =wxTheApp=
+  
 *** wxApp
+inherits: wxAppConsole
+
 - bool OnInit() :: Runs app initialization code. Returning =true= allows the event loop to run. Returning =false= quits the app.
 ** Windowing
 *** wxWindow
 - virtual bool Show(bool show = true) :: Shows or hides the window
 - void SetClientSize(int width, int height) :: sets the window client area in pixels
+- void SetDoubleBuffered(bool on) :: Turns on or off double buffering of the window if the system supports it. This can reduce flickering when GUI elements are altered quickly.
 
 *** wxFrame (top level window)
 A frame is a top level window that contains other windows.
 
 inherits: wxWindow
 
+- wxFrame(wxWindow *parent, wxWindowID id, const wxString &title, const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, long style=wxDEFAULT_FRAME_STYLE, const wxString &name=wxFrameNameStr) :: ctor
 - void Centre(int dir = wxBOTH) :: centers the window
   =dir= can be wxHORIZONTAL, wxVERTICAL, or wxBOTH
+
+*** wxStatusBar
+The status bar is a bar placed at the bottom of a frame, used to indicate the program status.
+
+- virtual wxStatusBar *wxFrame::CreateStatusBar(int number=1, long style=wxSTB_DEFAULT_STYLE, wxWindowID=0, const wxString &name=wxStatusBarNameStr) :: Returns a pointer to a newly created status bar
 
 ** Controls
 inherits: wxEvtHandler
@@ -51,7 +67,7 @@ inherits: wxEvtHandler
 *** wxPanel (control widget container)
 Panels are used to store control widgets, such as buttons.
 
-- wxPanel(wxWindow *parent, (default params)) :: ctor
+- wxPanel(wxWindow *parent, wxWindowID id=wxID_ANY, const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, long style=wxTAB_TRAVERSAL, const wxString &name=wxPanelNameStr) :: ctor
 
 *** wxButton
 - wxButton(wxWindow *parent, wxWindowID id, const wxString &label=wxEmptyString, const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, (default params)) ::
@@ -81,11 +97,18 @@ Displays text that the user can't edit
 - int GetValue() const :: get value
 
 ** Events
-*** wxCommandEvent
+*** General
+**** wxEvent
+- void Skip(bool skip=true) :: if skip=true, continue event propagation
+
+**** wxCommandEvent
+inherits: wxEvent
+
 This class is used to store event parameters for event-handling functions.
 
-*** wxEvtHandler
-- template <typename EventTag, typename Functor> void Bind(const EventTag &eventType, Functor functor, int id=wxID_ANY, int lastId=wxID_ANY, wxObject *userData=NULL) :: binds a function to an event
+- 
+**** wxEvtHandler
+- template <typename EventTag, typename Functor> void Bind(const EventTag &eventType, Functor functor, int id=wxID_ANY, int lastId=wxID_ANY, wxObject *userData=NULL) :: binds a function to an event and wxObject instance
   =eventType= ex: wxEVT_BUTTON
   =functor= event handler function
   =handler= the object that handles the event, which should be an instance of the class that =functor= belongs to
@@ -94,7 +117,50 @@ This class is used to store event parameters for event-handling functions.
   =userData= optional data to be associated with the event table entry. wxWidgets will own the pointer (aka it will free it when wxWidgets quits), and the pointer can be retrieved using =wxEvent::GetEventUserData()= later
 - template <typename EventTag, typename Functor> void Unbind(const EventTag &eventType, Functor functor, int id=wxID_ANY, int lastId=wxID_ANY, wxObject *userData=NULL) :: same as =Bind()= but undoes the binding
 
+*** Keyboard
+To get global keyboard events, call the =wxPanel= constructor with =label= containing =wxWANTS_CHARS=. Then, bind your callback function (which should take a =wxKeyEvent&= parameter) to the panel, like this:
+
+#+begin_src C++
+	panel->Bind(wxEVT_CHAR_HOOK, &MainFrame::on_key_event, this);
+#+end_src
+
+wxWidgets does not detect a difference between pressing uppercase or lowercase letters. Pressing a lowercase letter key will cause the uppercase version of the letter to be detected.
+
+**** wxKeyEvent
+- int GetKeyCode() :: returns the key code of the key in the event
+- wxChar GetUnicodeKey() :: returns the Unicode char of the key in the event
+
+** Strings
+*** wxString
+[[https://docs.wxwidgets.org/3.2/classwx_string.html][3.2 documentation]]
+
+wxString is meant to be used when interacting with wxWidgets elements. C style strings and C++ strings can be converted to and from it.
+
+**** Converting to wxString from (type)
+- static wxString FromAscii(const char *s) :: converts 7-bit ASCII
+- static wxString FromAscii(const char *s, size_t len) :: converts 7-bit ASCII of specified length
+- wxString(const char *psz) :: ctor for narrow char pointer with data in the current locale encoding
+- wxString(const char *psz, size_t nLength) :: ctor for narrow char pointer to string of specified length with data in the current locale encoding
+- wxString(const std::string &stringSrc) :: ctor for std::string with data in the current locale encoding
+
+**** Converting from wxString to (type)
+- const TYPE ToAscii(char replaceWith='_') const :: converts 7-bit ASCII, replacing non-ASCII chars with a placeholder char
+- wxCStrData c_str() const :: C string in the current locale
+
 * Events
+** Event Propagation
+Picture a wxObject class hierarchy like this, where the arrows point to the base class of each class:
+
+Button -> Panel -> Frame -> wxFrame -> wxApp
+
+When a wxCommandEvent occurs (ex. Button is clicked), the event starts at Button, and if it isn't handled by Button, moves up the hierarchy until it is handled. This movement of events is known as *event propagation*.
+
+For Button to handle the event, the =Bind()= method must be called on it. Once an event is handled, it will no longer propagate up the class hierarchy, UNLESS you call =wxEvent::Skip=.
+
+Not all events propagate. Here is an uncomplete list of such events:
+- wxMouseEvent
+- wxKeyEvent (unless EVT_CHAR_HOOK is used)
+
 ** Handling
 Events can be handled statically or dynamically. For both methods, you need a window ID to identify which widget the event is related to, and a callback function for when the event occurs. This function must take a parameter of type =wxCommandEvent&=.
 
@@ -123,5 +189,198 @@ How to write the event table:
 Event handlers can be found on the documentation pages for certain classes.
 
 - =EVT_BUTTON(BUTTON_ID, handlerFunc)= :: button presses
-** Event Propagation
-When an event happens (ex. 
+* Sample Programs
+** Random
+#+begin_src C++ :flags $(wx-config --cppflags --libs)
+	#include <iostream>
+
+	#include <wx/wx.h>
+
+	struct Guy{
+		Guy(){ std::cout << "I am born.\n"; }
+		~Guy(){ std::cout << "I am die.\n"; }
+	};
+
+	struct MainFrame : public wxFrame{
+	public:
+		MainFrame(const wxString &title)
+			: wxFrame(nullptr, wxID_ANY, title)
+		{
+			auto panel = new wxPanel(this);
+			auto text = new wxStaticText(panel, wxID_ANY, "Hey.", wxPoint(20, 20));
+		}
+	};
+
+	struct App : public wxApp{
+		bool OnInit() override
+		{
+			// guy is not automatically cleaned up, but other wxWidgets classes are
+			auto guy = new Guy();
+
+			auto frame = new MainFrame("C++ GUI");
+			frame->SetClientSize(540, 420);
+			frame->Centre();
+			frame->Show();
+			return true;
+		}
+	};
+
+	int main()
+	{
+		std::cout << "once upon a time" << std::endl;
+		auto app = new App;
+
+		// Run the app
+		int argc = 0;
+		wxChar **argv = nullptr;
+		wxApp::SetInstance(app);
+		wxEntry(argc, argv);
+
+		// Cleanup
+		wxEntryCleanup();
+
+		std::cout << "the end" << std::endl;
+	}
+#+end_src
+
+#+RESULTS:
+| once | upon | a     | time |
+| I    | am   | born. |      |
+| the  | end  |       |      |
+** Keyboard
+#+begin_src C++ :flags -std=c++20 $(wx-config --cppflags --libs)
+	#include <iostream>
+	#include <sstream>
+
+	#include <wx/wx.h>
+
+	struct MainFrame : public wxFrame{
+		MainFrame(const wxString &title)
+			: wxFrame(nullptr, wxID_ANY, title)
+		{
+			auto panel = new wxPanel(this);
+			CreateStatusBar();
+			SetStatusText("press a key!");
+			panel->Bind(wxEVT_CHAR_HOOK, &MainFrame::on_char_hook, this);
+		}
+		void on_char_hook(wxKeyEvent &e)
+		{
+			char key = e.GetUnicodeKey();
+			std::stringstream ss;
+			ss << "char detected: " << key;
+
+			switch (key)
+			{
+			case 'a':
+				// This will never run
+				ss << " lowercase a found!";
+				break;
+			case 'A':
+				ss << " uppercase A found!";
+				break;
+			}
+
+			SetStatusText(static_cast<std::string>(ss.view()));
+		}
+	};
+
+	struct App : public wxApp{
+		bool OnInit() override
+		{
+			auto frame = new MainFrame("C++ GUI");
+			frame->SetClientSize(540, 300);
+			frame->Centre();
+			frame->Show();
+			return true;
+		}
+	};
+
+	int main()
+	{
+		auto app = new App;
+		wxApp::SetInstance(app);
+		int argc = 0;
+		wxChar **argv = nullptr;
+		wxEntry(argc, argv);
+		wxEntryCleanup();
+		return 0;
+	}
+#+end_src
+
+#+RESULTS:
+** Timer (from [[https://forums.wxwidgets.org/viewtopic.php?p=186485&sid=c75313f3786c76b1f352da29d7fe8e89#p186485][a wxWidgets forum post]])
+#+begin_src C++ :flags $(wx-config --cppflags --libs)
+	#include <wx/wx.h>
+	#include <wx/timer.h>
+
+	static const int timerInterval = 1000; // 1000 ms
+
+	class MyFrame : public wxFrame
+	{
+	private:
+		wxTimer   m_timer;
+		wxButton* m_startStopTimerBtn;
+
+		void OnStartStopTimer(wxCommandEvent&)
+		{
+			if ( m_timer.IsRunning() )
+			{
+				m_timer.Stop();            
+				wxLogMessage("Timer stopped.");
+				m_startStopTimerBtn->SetLabel("&Start timer");
+			}
+			else
+			{
+				m_timer.Start(timerInterval);
+				wxLogMessage("Timer started.");
+				m_startStopTimerBtn->SetLabel("&Stop timer");
+			}
+		}
+
+		void OnTimer(wxTimerEvent&)
+		{
+			wxLogMessage("OnTimer called.");
+		}    
+	public:
+		MyFrame() : wxFrame(NULL, wxID_ANY, "wxTimer example")
+		{       
+			wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+
+			m_startStopTimerBtn = new wxButton(this, wxID_ANY, "&Start timer");
+			m_startStopTimerBtn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::OnStartStopTimer, this);        
+			mainSizer->Add(m_startStopTimerBtn, 0, wxEXPAND | wxALL , 5);
+
+			wxTextCtrl* logCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, 
+							     wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH2);        
+			mainSizer->Add(logCtrl, 1, wxEXPAND | wxALL , 5);
+			wxLog::SetActiveTarget(new wxLogTextCtrl(logCtrl));        
+
+			SetSizer(mainSizer);         
+
+			m_timer.Bind(wxEVT_TIMER, &MyFrame::OnTimer, this);
+		}	
+	};
+
+	class MyApp : public wxApp
+	{
+	public:	
+		bool OnInit()
+		{
+			(new MyFrame)->Show();
+			return true;
+		}
+	};
+
+	int main()
+	{
+		wxApp::SetInstance(new MyApp());
+		int argc = 0;
+		wxChar **argv = nullptr;
+		wxEntry(argc, argv);
+		wxEntryCleanup();
+		return 0;
+	}
+
+#+end_src
+
+#+RESULTS:

@@ -121,5 +121,6 @@ Note: See the glossary in the emacs manual for more emacs terms
 * Org
 ** Default bindings
 | C-c C-, s     | Insert code block    |
+| C-c '         | Edit code block      |
 | C-c .         | Insert timestamp     |
 | C-u C-u C-c . | Insert alt timestamp |

@@ -140,6 +140,41 @@ When you store a variable in =std::bitset<x>= that has more than x bits, the num
   
 #+end_src
 
+* Classes
+** Testing
+#+begin_src C++
+	#include <iostream>
+
+	struct Guy{
+	public:
+		Guy(int hp, char *name)
+			: m_hp(hp), m_name(name) {}
+		void attack(int dmg)
+		{
+			m_hp -= dmg;
+		}
+		void print()
+		{
+			std::cout << "Guy: " << m_name << ", hp " << m_hp << '\n';
+		}
+	private:
+		int m_hp;
+		char *m_name;
+	};
+
+	int main()
+	{
+		Guy g(10, "brush");
+		g.print();
+		g.attack(6);
+		g.print();
+	}
+#+end_src
+
+#+RESULTS:
+| Guy: brush | hp 10 |
+| Guy: brush | hp 4  |
+
 * Differences from C
 - For function headers, an empty argument list, instead of =void=, is used to specify no arguments
 - For null pointer literals, =nullptr= is preferred to =NULL=

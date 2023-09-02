@@ -43,9 +43,12 @@ inherits: wxAppConsole
 - bool OnInit() :: Runs app initialization code. Returning =true= allows the event loop to run. Returning =false= quits the app.
 ** Windowing
 *** wxWindow
-- virtual bool Show(bool show = true) :: Shows or hides the window
+- wxWindow(wxWindow *parent, wxWindowID id, const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, long style=0, const wxString &name=wxPanelNameStr) :: ctor
+- virtual bool Show(bool show = true) :: shows or hides the window
 - void SetClientSize(int width, int height) :: sets the window client area in pixels
-- void SetDoubleBuffered(bool on) :: Turns on or off double buffering of the window if the system supports it. This can reduce flickering when GUI elements are altered quickly.
+- void SetDoubleBuffered(bool on) :: turns on or off double buffering of the window if the system supports it. This can reduce flickering when GUI elements are altered quickly.
+- void SetSizer(wxSizer *sizer, bool deleteOld=true) :: sets the window to have the given sizer, if deleteOld==true, delete the old sizer
+- void SetSizerAndFit(wxSizer *sizer, bool deleteOld=true) :: same as =SetSizer()= but resizes the window to fit around the sizer, and then sets its size to be the minimum size
 
 *** wxFrame (top level window)
 A frame is a top level window that contains other windows.
@@ -55,6 +58,40 @@ inherits: wxWindow
 - wxFrame(wxWindow *parent, wxWindowID id, const wxString &title, const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, long style=wxDEFAULT_FRAME_STYLE, const wxString &name=wxFrameNameStr) :: ctor
 - void Centre(int dir = wxBOTH) :: centers the window
   =dir= can be wxHORIZONTAL, wxVERTICAL, or wxBOTH
+
+*** wxDialog (top level window, often used to ask the user for input)
+inherits: wxWindow
+
+- wxDialog(wxWindow *parent, wxWindowID id, const wxString &title, const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, long style=wxDEFAULT_DIALOG_STYLE, const wxString &name=wxDialogNameStr) :: ctor
+- wxSizer *CreateTextSizer(const wxString &message, int widthMax=-1) :: creates a veritcal =wxBoxSizer= displaying =message= separated by newlines into different =wxStaticText= objects. =widthMax=, if >= 0, is the max width of the text in pixels before a text wrap occurs.
+- virtual int ShowModal() :: Shows the modal dialog and blocks program flow until the dialog has been dismissed with =EndModal()=
+
+**** Modal and Modeless
+A modal dialog blocks program flow and user input on other windows until it is dismissed. A modeless dialog lets the program flow continue.  Use =ShowModal()= to run the dialog in modal mode, and =Show()= to run the dialog in modeless mode. Modal dialogs can be created on the stack.
+
+Dialog memory handling example:
+#+begin_src C++
+	// Heap
+	void AskUser()
+	{
+	    MyAskDialog *dlg = new MyAskDialog(...);
+	    if ( dlg->ShowModal() == wxID_OK )
+		// ...
+	    //else: dialog was cancelled or some another button pressed
+ 
+	    dlg->Destroy();
+	}
+
+	// Stack
+	void AskUser()
+	{
+	    MyAskDialog dlg(...);
+	    if ( dlg.ShowModal() == wxID_OK )
+		// ...
+ 
+	    // no need to call Destroy() here
+	}
+#+end_src
 
 *** wxStatusBar
 The status bar is a bar placed at the bottom of a frame, used to indicate the program status.
@@ -81,6 +118,9 @@ Displays text that the user can't edit
 
 - wxStaticText(wxWindow *parent, xWindowID id, const wxString &label, const wxPoint &pos = wxDefaultPosition, const wxSIze &size wxDefaultSize, long style = 0, const wxString &name = wxStaticTextNameStr) ::
   =label= the text to display
+
+*** wxHyperlinkCtrl
+- wxHyperlinkCtrl(wxWindow *parent, wxWindowID id, const wxString &label, const wxString &url) :: ctor
 
 *** wxGauge (progress bar)
 - wxGauge(wxWindow *parent, wxWindowID id, int range, const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize, long style = wxGA_HORIZONTAL, const wxValidator &validator = wxDefaultValidator, const wxString &name = wxGaugeNameStr) ::
@@ -129,6 +169,37 @@ wxWidgets does not detect a difference between pressing uppercase or lowercase l
 **** wxKeyEvent
 - int GetKeyCode() :: returns the key code of the key in the event
 - wxChar GetUnicodeKey() :: returns the Unicode char of the key in the event
+
+** Sizers
+*** wxSizer
+[[https://docs.wxwidgets.org/3.2/classwx_sizer.html][wxSizer 3.2 documentation]]
+
+- wxSizerItem *Add(wxWindow *window, int proportion=0, int flag=0, int border=0, wxObject *userData=NULL) ::
+  - =window= is the window to be added
+  - =proportion=, if used in =wxBoxSizer=, indicates if the child can resize itself with the sizer. If 0, the size is constant. If 1 or greater, the size will grow by a set factor relative to the other sizer items.
+  - =flag= can hold the following values OR'ed together:
+    - areas to have the border with apply to:
+      - =wxTOP=
+      - =wxBOTTOM=
+      - =wxLEFT=
+      - =wxRIGHT=
+      - =wxALL=
+    - alignment:
+      - =wxALIGN_CENTRE=
+      - =wxALIGN_LEFT=
+      - =wxALIGN_RIGHT=
+      - =wxALIGN_TOP=
+      - =wxALIGN_BOTTOM=
+      - =wxALIGN_CENTRE_VERTICAL=
+      - =wxALIGN_CENTRE_HORIZONTAL=
+    - [[https://docs.wxwidgets.org/3.2/classwx_sizer.html#wxsizer_flags][see the docs for more]]
+  - =border= is the border with
+  - =userData= allows an extra object to be attached to the sizer item for use in derived classe when sizing information is more complex than the proportion and flag will allow for
+
+*** wxBoxSizer
+inherits: wxSizer
+
+- wxBoxSizer(int orient) :: orient can be either wxHORIZONTAL or wxVERTICAL to lay out the sizer items in each direction
 
 ** Strings
 *** wxString
@@ -344,17 +415,20 @@ Event handlers can be found on the documentation pages for certain classes.
 	public:
 		MyFrame() : wxFrame(NULL, wxID_ANY, "wxTimer example")
 		{       
-			wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
+			// Creating button
 			m_startStopTimerBtn = new wxButton(this, wxID_ANY, "&Start timer");
-			m_startStopTimerBtn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::OnStartStopTimer, this);        
-			mainSizer->Add(m_startStopTimerBtn, 0, wxEXPAND | wxALL , 5);
+			m_startStopTimerBtn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::OnStartStopTimer, this);
 
+			// Creating log
 			wxTextCtrl* logCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, 
 							     wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH2);        
-			mainSizer->Add(logCtrl, 1, wxEXPAND | wxALL , 5);
 			wxLog::SetActiveTarget(new wxLogTextCtrl(logCtrl));        
-
+		
+			// Creating sizer
+			wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+			mainSizer->Add(m_startStopTimerBtn, 0, wxEXPAND | wxALL , 5);
+			mainSizer->Add(logCtrl, 1, wxEXPAND | wxALL , 5);
 			SetSizer(mainSizer);         
 
 			m_timer.Bind(wxEVT_TIMER, &MyFrame::OnTimer, this);

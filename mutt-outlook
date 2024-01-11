@@ -13,3 +13,10 @@ The fix was to create the account folder AND the cache folder inside of it befor
 remember to add this to your .profile or .bashrc for when you're asked for
 your gpg password:
 export GPG_TTY=$(tty)
+
+1.11.24
+If mutt hangs when trying to authenticate with XOAUTH2 and you don't see the login prompt, check if gpg is running in the background.
+	If it is, kill it and trying logging in again.
+	If it still doesn't work, make sure $GPG_TTY is set properly.
+
+If you are using Gentoo, you can use `eselect pinentry` to change the user interface of the prompt for your GPG password. Selections include gtk, qt, curses and tty.

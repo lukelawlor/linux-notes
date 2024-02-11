@@ -41,6 +41,7 @@ Most classes should be created with =new= and not explicity be deleted. wxWidget
 inherits: wxAppConsole
 
 - bool OnInit() :: Runs app initialization code. Returning =true= allows the event loop to run. Returning =false= quits the app.
+  
 ** Windowing
 *** wxWindow
 - wxWindow(wxWindow *parent, wxWindowID id, const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, long style=0, const wxString &name=wxPanelNameStr) :: ctor

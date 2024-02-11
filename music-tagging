@@ -1,0 +1,8 @@
+# Tagging OPUS files
+Use kid3-cli:
+
+kid3-cli -c "set album 'Album Name'" -c "set artist Artist" -c "set genre 'Genre'" -c "set date Year" *.opus
+kid3-cli -c "set track #" -c "set title 'Title'" file.opus
+
+# Set album art
+kid3-cli -c "set picture:./path_to_album_art.jpg 'Description of picture'" *.opus

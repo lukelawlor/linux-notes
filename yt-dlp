@@ -1,0 +1,2 @@
+# Using yt-dlp to download an album from a playlist and name the tracks the way I want
+yt-dlp -x --audio-format best -o "%(playlist_index)s. %(title)s.%(ext)s" PLAYLIST_ID
